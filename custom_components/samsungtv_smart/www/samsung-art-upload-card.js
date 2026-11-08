@@ -14,6 +14,11 @@
  *   title: Upload to The Frame           # optional
  */
 
+function stvEscapeHtml(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 class SamsungArtUploadCard extends HTMLElement {
   setConfig(config) {
     this._config = config || {};
@@ -120,8 +125,8 @@ class SamsungArtUploadCard extends HTMLElement {
              ${entities
                .map(
                  (e) =>
-                   `<option value="${e}">${
-                     this._hass.states[e].attributes.friendly_name || e
+                   `<option value="${stvEscapeHtml(e)}">${
+                     stvEscapeHtml(this._hass.states[e].attributes.friendly_name || e)
                    }</option>`
                )
                .join("")}
@@ -129,7 +134,7 @@ class SamsungArtUploadCard extends HTMLElement {
         : "";
 
     this.innerHTML = `
-      <ha-card header="${cfg.title || "Upload to The Frame"}">
+      <ha-card header="${stvEscapeHtml(cfg.title || "Upload to The Frame")}">
         <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
           ${picker}
           <input id="stv-file" type="file" accept="image/*,.heic,.heif" />

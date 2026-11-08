@@ -38,6 +38,7 @@ from homeassistant.helpers.event import async_call_later, async_track_state_chan
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
+from .fork_policy import FRAME_FEATURES_ENABLED
 from . import async_get_samsungtv_api_key
 from .api.art import SamsungTVAsyncArt, _DeviceLoggerAdapter
 from .api.ipcontrol import (
@@ -336,7 +337,7 @@ async def async_setup_entry(  # noqa: C901
     # If already confirmed as a Frame TV (persisted flag), skip the live check.
     # This prevents Art Mode entities from disappearing after a reload when
     # the TV is off or in Art Mode (and thus unreachable via WebSocket).
-    is_frame_tv_cached = entry.data.get(CONF_IS_FRAME_TV, False)
+    is_frame_tv_cached = FRAME_FEATURES_ENABLED and entry.data.get(CONF_IS_FRAME_TV, False)
 
     if is_frame_tv_cached:
         _LOGGER.debug(

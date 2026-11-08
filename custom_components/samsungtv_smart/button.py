@@ -27,6 +27,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .fork_policy import FRAME_FEATURES_ENABLED
 from .api.art import SamsungTVAsyncArt
 from .api.ipcontrol import (
     SamsungIPControl,
@@ -75,7 +76,7 @@ async def async_setup_entry(
         )
 
     art_api = hass.data[DOMAIN][entry.entry_id].get(DATA_ART_API)
-    is_frame_tv = bool(entry.data.get(CONF_IS_FRAME_TV))
+    is_frame_tv = FRAME_FEATURES_ENABLED and bool(entry.data.get(CONF_IS_FRAME_TV))
     if art_api is not None and not is_frame_tv:
         # Same probe as the art number entities when the flag is not persisted
         # yet (first setup).

@@ -70,6 +70,8 @@ from homeassistant.util import Throttle
 from homeassistant.util import dt as dt_util
 from homeassistant.util.async_ import run_callback_threadsafe
 
+from .fork_policy import FRAME_FEATURES_ENABLED
+from .safe_art_path import thumbnail_path
 from . import (
     get_oauth_refresh_lock,
     get_smartthings_api_key,
@@ -5949,6 +5951,8 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
         while the TV was on. The flag is cheap to re-derive: a single ~5s REST
         probe per startup, cached in memory for the rest of the session.
         """
+        if not FRAME_FEATURES_ENABLED:
+            return False
         if self._frame_tv_supported:
             return True
         try:
@@ -6042,6 +6046,8 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
         service ``response_variable``. The automatic per-artwork trigger lives
         on the Art Metadata sensor.
         """
+        if not FRAME_FEATURES_ENABLED:
+            return {"error": "Art features are disabled in this S90C fork"}
         from .art_identify import async_identify_for_entry, get_shared_cache
 
         entry = self.hass.config_entries.async_get_entry(self._entry_id)
@@ -6841,8 +6847,7 @@ class SamsungTVDevice(SamsungTVEntity, MediaPlayerEntity):
 
             # Create directory path
             www_path = self.hass.config.path("www", "frame_art", self._entry_id, subdir)
-            file_name = f"{content_id.replace(':', '_')}.jpg"
-            file_path = os.path.join(www_path, file_name)
+            file_name, file_path = thumbnail_path(www_path, content_id)
 
             # Check if file already exists (unless force_download=True)
             if save_to_file and not force_download:

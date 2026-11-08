@@ -562,7 +562,16 @@ class FolderGalleryCard extends HTMLElement {
       default_folder: config.default_folder || null, // sub-folder/name shown first
       ...config
     };
-    
+    // CSS is interpolated in a style element: reject markup and CSS statements.
+    const length = (value, fallback) =>
+      /^(?:0|[0-9]+(?:\.[0-9]+)?(?:px|em|rem|%|vh|vw))$/.test(String(value))
+        ? String(value) : fallback;
+    this._config.columns = Math.min(10, Math.max(1, parseInt(config.columns, 10) || 4));
+    this._config.gap = length(config.gap, '8px');
+    this._config.border_radius = length(config.border_radius, '8px');
+    this._config.image_height = length(config.image_height, '150px');
+    this._config.aspect_ratio = /^[0-9]+(?:\.[0-9]+)?(?:\s*\/\s*[0-9]+(?:\.[0-9]+)?)?$/.test(String(config.aspect_ratio))
+      ? String(config.aspect_ratio) : null;
     this.render();
   }
 
@@ -1028,7 +1037,7 @@ class FolderGalleryCard extends HTMLElement {
       <ha-card>
         ${this._config.title ? `
           <div class="card-header">
-            <span>${this._config.title}</span>
+            <span>${fgcEscapeHtml(this._config.title)}</span>
             <span class="image-count"></span>
           </div>
         ` : ''}
@@ -1133,13 +1142,13 @@ class FolderGalleryCard extends HTMLElement {
       ${selector}
       <div class="gallery-grid">
         ${this._images.map((img, index) => `
-          <div class="gallery-item" data-index="${index}" data-path="${img.path}" data-content-id="${img.content_id || ''}">
-            <img src="${this._thumbUrl(img.path)}" alt="${img.name}" loading="lazy" decoding="async" class="loading"
+          <div class="gallery-item" data-index="${index}" data-path="${fgcEscapeHtml(img.path)}" data-content-id="${fgcEscapeHtml(img.content_id || '')}">
+            <img src="${fgcEscapeHtml(this._thumbUrl(img.path))}" alt="${fgcEscapeHtml(img.name)}" loading="lazy" decoding="async" class="loading"
                  onerror="this.classList.add('error')"
                  onload="this.classList.remove('loading')">
             ${this._config.show_filename ? `
               <div class="image-overlay">
-                <div class="image-name">${img.name}</div>
+                <div class="image-name">${fgcEscapeHtml(img.name)}</div>
               </div>
             ` : ''}
           </div>
@@ -1905,18 +1914,18 @@ class FolderGalleryCardEditor extends HTMLElement {
 
       <div class="form-row">
         <label>${this._t('ed_title')}</label>
-        <input type="text" id="title" value="${this._config.title || ''}">
+        <input type="text" id="title" value="${fgcEscapeHtml(this._config.title || '')}">
       </div>
 
       <div class="form-row">
         <label>${this._t('ed_sensor')}</label>
-        <input type="text" id="folder_sensor" value="${this._config.folder_sensor || this._config.sensor || ''}" placeholder="sensor.your_folder_sensor">
+        <input type="text" id="folder_sensor" value="${fgcEscapeHtml(this._config.folder_sensor || this._config.sensor || '')}" placeholder="sensor.your_folder_sensor">
         <span class="hint">${this._t('ed_sensor_hint')}</span>
       </div>
 
       <div class="form-row">
         <label>${this._t('ed_folder')}</label>
-        <input type="text" id="folder" value="${this._config.folder || ''}" placeholder="${this._t('ed_folder_ph')}">
+        <input type="text" id="folder" value="${fgcEscapeHtml(this._config.folder || '')}" placeholder="${this._t('ed_folder_ph')}">
         <span class="hint">${
           (this._config.folder_sensor || this._config.sensor)
             ? this._t('ed_folder_hint_auto')
@@ -1937,12 +1946,12 @@ class FolderGalleryCardEditor extends HTMLElement {
 
       <div class="form-row">
         <label>${this._t('ed_columns')}</label>
-        <input type="number" id="columns" value="${this._config.columns || 4}" min="1" max="10">
+        <input type="number" id="columns" value="${fgcEscapeHtml(this._config.columns || 4)}" min="1" max="10">
       </div>
 
       <div class="form-row">
         <label>${this._t('ed_image_height')}</label>
-        <input type="text" id="image_height" value="${this._config.image_height || '150px'}">
+        <input type="text" id="image_height" value="${fgcEscapeHtml(this._config.image_height || '150px')}">
       </div>
 
       <div class="form-row">
@@ -1963,13 +1972,13 @@ class FolderGalleryCardEditor extends HTMLElement {
       </div>
       <div class="form-row">
         <label>${this._t('ed_thumb_width')}</label>
-        <input type="number" id="thumbnail_width" value="${this._config.thumbnail_width || 400}" min="64" max="1024">
+        <input type="number" id="thumbnail_width" value="${fgcEscapeHtml(this._config.thumbnail_width || 400)}" min="64" max="1024">
       </div>
 
       <div class="section">${this._t('ed_actions')}</div>
       <div class="form-row">
         <label>${this._t('ed_tv_entity')}</label>
-        <input type="text" id="_tv_entity" value="${tvEntity}" placeholder="media_player.samsung_frame">
+        <input type="text" id="_tv_entity" value="${fgcEscapeHtml(tvEntity)}" placeholder="media_player.samsung_frame">
       </div>
       <div class="form-row">
         <label>${this._t('ed_single_tap')}</label>

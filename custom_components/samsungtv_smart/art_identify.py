@@ -47,6 +47,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 
+from .fork_policy import FRAME_FEATURES_ENABLED
 from .const import (
     ART_CACHE_TTL_HIT,
     ART_CACHE_TTL_MISS,
@@ -897,6 +898,8 @@ async def async_identify_for_entry(
     ``error`` / ``skipped`` key describing why nothing ran (disabled, missing
     keys, personal artwork with the toggle off, thumbnail not downloaded yet).
     """
+    if not FRAME_FEATURES_ENABLED:
+        return {"error": "Art features are disabled in this S90C fork"}
     data = entry.data
     if not data.get(CONF_ART_IDENTIFY_ENABLE):
         return {

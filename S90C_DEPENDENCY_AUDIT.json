@@ -1,0 +1,95 @@
+{
+  "reviewed_on": "2026-11-08",
+  "target": "Home Assistant 2026.11.0 / CPython 3.14 / musllinux_1_2_aarch64",
+  "osv_endpoint": "https://api.osv.dev/v1/querybatch",
+  "queries": [
+    {
+      "package": {
+        "name": "websocket-client",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.9.2"
+    },
+    {
+      "package": {
+        "name": "wakeonlan",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.3.0"
+    },
+    {
+      "package": {
+        "name": "aiofiles",
+        "ecosystem": "PyPI"
+      },
+      "version": "25.1.0"
+    },
+    {
+      "package": {
+        "name": "casttube",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.2.1"
+    },
+    {
+      "package": {
+        "name": "requests",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.34.2"
+    },
+    {
+      "package": {
+        "name": "charset-normalizer",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.4.3"
+    },
+    {
+      "package": {
+        "name": "idna",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.20"
+    },
+    {
+      "package": {
+        "name": "urllib3",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.8.0"
+    },
+    {
+      "package": {
+        "name": "certifi",
+        "ecosystem": "PyPI"
+      },
+      "version": "2026.10.23"
+    }
+  ],
+  "results": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "scope": "Pinned integration requirements and their runtime dependency closure. Not the full Home Assistant environment.",
+  "ha_version_evidence": "User screenshot: Core 2026.11.0, Supervisor 2026.10.5, OS 18.4",
+  "ha_shared_pillow_check": {
+    "version": "13.0.0",
+    "source": "https://github.com/home-assistant/core/blob/2026.11.0/homeassistant/package_constraints.txt",
+    "osv_query": {
+      "package": {
+        "name": "pillow",
+        "ecosystem": "PyPI"
+      },
+      "version": "13.0.0"
+    },
+    "osv_result": {}
+  }
+}
