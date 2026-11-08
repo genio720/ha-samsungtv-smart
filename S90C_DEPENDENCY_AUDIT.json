@@ -1,6 +1,6 @@
 {
   "reviewed_on": "2026-11-08",
-  "target": "Home Assistant 2026.10.2 / CPython 3.14 / musllinux_1_2_aarch64",
+  "target": "Home Assistant 2026.11.0 / CPython 3.14 / musllinux_1_2_aarch64",
   "osv_endpoint": "https://api.osv.dev/v1/querybatch",
   "queries": [
     {
@@ -78,5 +78,18 @@
     {},
     {}
   ],
-  "scope": "Pinned integration requirements and their runtime dependency closure. Not the full Home Assistant environment."
+  "scope": "Pinned integration requirements and their runtime dependency closure. Not the full Home Assistant environment.",
+  "ha_version_evidence": "User screenshot: Core 2026.11.0, Supervisor 2026.10.5, OS 18.4",
+  "ha_shared_pillow_check": {
+    "version": "13.0.0",
+    "source": "https://github.com/home-assistant/core/blob/2026.11.0/homeassistant/package_constraints.txt",
+    "osv_query": {
+      "package": {
+        "name": "pillow",
+        "ecosystem": "PyPI"
+      },
+      "version": "13.0.0"
+    },
+    "osv_result": {}
+  }
 }

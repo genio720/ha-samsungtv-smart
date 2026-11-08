@@ -1,13 +1,13 @@
 # Dependency review — 2026-11-08
 
-The manifest now pins all nine packages in this integration's runtime dependency closure with exact == versions. These are websocket-client 1.9.2, wakeonlan 3.3.0, aiofiles 25.1.0, casttube 0.2.1, requests 2.34.2, charset-normalizer 3.4.3, idna 3.20, urllib3 2.8.0 and certifi 2026.10.23.
+The manifest now pins all nine packages in this integration's runtime dependency closure with exact == versions. These are websocket-client 1.9.2, wakeonlan 3.3.0, aiofiles 25.1.0, casttube 0.2.1, requests 2.34.2, charset-normalizer 3.4.3, idna 3.20, urllib3 2.8.0 and certifi 2026.11.03.
 
-Target checked: Home Assistant Core 2026.10.2, CPython 3.14, Linux musl ARM64. This is the previously reported HA version, not a live measurement of the installed system. Official HA constraints require Requests 2.34.2 and charset-normalizer 3.4.3 and allow aiofiles >=24.1.0. HA's integration requirements use wakeonlan 3.3.0; this was chosen over the current major version 4.0.0 to retain the expected API. Wheel source inspection confirmed send_magic_packet remains available.
+Target checked: Home Assistant Core 2026.11.0, CPython 3.14, Linux musl ARM64. Core 2026.11.0 is confirmed by the user screenshot (Supervisor 2026.10.5, OS 18.4); installed Python/package versions have not been read live. Official HA constraints require Requests 2.34.2 and charset-normalizer 3.4.3 and allow aiofiles >=24.1.0. HA's integration requirements use wakeonlan 3.3.0; this was chosen over the current major version 4.0.0 to retain the expected API. Wheel source inspection confirmed send_magic_packet remains available.
 
 Sources:
-- https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/package_constraints.txt
-- https://github.com/home-assistant/core/blob/2026.10.2/requirements_all.txt
-- https://github.com/home-assistant/core/blob/2026.10.2/pyproject.toml
+- https://github.com/home-assistant/core/blob/2026.11.0/homeassistant/package_constraints.txt
+- https://github.com/home-assistant/core/blob/2026.11.0/requirements_all.txt
+- https://github.com/home-assistant/core/blob/2026.11.0/pyproject.toml
 - Package metadata and artifact SHA256 digests from https://pypi.org/pypi/NAME/VERSION/json
 - OSV version queries: https://api.osv.dev/v1/querybatch (recorded in S90C_DEPENDENCY_AUDIT.json).
 
@@ -15,10 +15,10 @@ Sources:
 
 OSV returned no known vulnerability matches for the nine pinned versions on the review date. This is a database result, not a malware or safety certification; it does not cover every package in Home Assistant.
 
-Removed pillow-heif from the installation manifest because it is only used by the disabled Frame image-conversion path and is imported lazily there. This also avoids adding Pillow through that dependency. HA 2026.10.2 itself constrains Pillow to 12.3.0. OSV reports vulnerabilities for that version, including GHSA-22hg-r758-rrw9 (MIC/TIFF infinite loop, fixed in 13.0.0):
+Removed pillow-heif from the installation manifest because it is only used by the disabled Frame image-conversion path and is imported lazily there. This also avoids adding Pillow through that dependency. HA 2026.11.0 itself constrains Pillow to 13.0.0. OSV returned no known vulnerability matches for Pillow 13.0.0 on the review date. This resolves the earlier concern specific to HA 2026.10.2/Pillow 12.3.0, including GHSA-22hg-r758-rrw9, fixed in 13.0.0:
 https://github.com/python-pillow/Pillow/security/advisories/GHSA-22hg-r758-rrw9
 
-Do not override HA's shared Pillow version from this integration. Removing pillow-heif does not remove or repair Pillow already installed by HA or other integrations. Verify the current HA environment and an official compatible update before installation; do not claim the complete HA environment is vulnerability-free.
+This is an upstream version-constraint check; the actual installed Pillow package was not inspected. Do not override HA's shared Pillow from this integration or claim the complete HA environment is vulnerability-free.
 
 ## Reproducibility and validation
 

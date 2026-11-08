@@ -1,4 +1,4 @@
-# Target: Home Assistant 2026.10.2, CPython 3.14, musllinux 1.2 aarch64.
+# Target: Home Assistant 2026.11.0, CPython 3.14, musllinux 1.2 aarch64.
 # Evidence/reproduction only: HA installs manifest requirements, not this hash lock.
 websocket-client==1.9.2 --hash=sha256:e1a673830a9c7bfa47b1cd3d5e4178f4c9651d80a4eab02c9c23a1c3ec6250ce
 wakeonlan==3.3.0 --hash=sha256:969d4e1f30add1a79790c99350e91c46ed45588770416257a3f806ca0314b17a
@@ -8,4 +8,4 @@ requests==2.34.2 --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1
 charset-normalizer==3.4.3 --hash=sha256:ccf600859c183d70eb47e05a44cd80a4ce77394d1ac0f79dbd2dd90a69a3a049
 idna==3.20 --hash=sha256:ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c
 urllib3==2.8.0 --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3
-certifi==2026.10.23 --hash=sha256:e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1
+certifi==2026.11.03 --hash=sha256:e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1

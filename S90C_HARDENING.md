@@ -30,7 +30,7 @@ Not run: full upstream HA test suite, actual HA startup, Linux/ARM64 install, or
 ## Before installation
 
 1. Confirm current HA/Python/OS versions and a recoverable backup.
-2. Nine runtime dependencies are pinned in the manifest and resolved against HA 2026.10.2 constraints; see S90C_DEPENDENCIES.md. Confirm the actual installed HA version before installation. Do not install the development requirements.txt in HA OS.
+2. Nine runtime dependencies are pinned in the manifest and resolved against HA 2026.11.0 constraints; see S90C_DEPENDENCIES.md. Core 2026.11.0 was confirmed by the user screenshot. Do not install the development requirements.txt in HA OS.
 3. Keep optional SmartThings/AI credentials unset for local use and disable remote logos if unwanted.
 4. Keep GitHub Actions/release automation disabled unless its permissions and mutable action references have been reviewed. This branch does not change workflow configuration or claim those findings resolved.
 5. Install only an explicitly reviewed revision of this fork after HA validation. Do not automatically sync upstream.
