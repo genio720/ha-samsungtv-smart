@@ -31,6 +31,7 @@ import uuid
 
 import aiohttp
 
+from ..fork_policy import FRAME_FEATURES_ENABLED
 from . import _image_prep
 
 _LOGGER = logging.getLogger(__name__)
@@ -657,6 +658,8 @@ class SamsungTVAsyncArt:
         backoff about 15 s after a drop, so the loop's later attempts were
         refused, and so was any art write once the TV was back.
         """
+        if not FRAME_FEATURES_ENABLED:
+            return False
         # Acquire lock to prevent concurrent connection attempts (v6.3.5)
         async with self._connection_lock:
             # Reuse the existing connection only if it is genuinely alive.
@@ -1598,6 +1601,8 @@ class SamsungTVAsyncArt:
         the backoff lasted (#273: "Failed to turn Art Mode ON after 3 attempts"
         twice, five minutes apart, while the channel was backing off).
         """
+        if not FRAME_FEATURES_ENABLED:
+            return None
         async with self._request_lock:
             cooldown_remaining = (
                 0.0
@@ -1727,6 +1732,8 @@ class SamsungTVAsyncArt:
         was asleep at startup is asked again on the next call, as the REST
         path already does.
         """
+        if not FRAME_FEATURES_ENABLED:
+            return False
         if self._art_channel_verified:
             return True
         try:

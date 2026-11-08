@@ -30,6 +30,7 @@ from homeassistant.helpers.event import (
 )
 from homeassistant.helpers.storage import Store
 
+from .fork_policy import FRAME_FEATURES_ENABLED
 from .api.art import SamsungTVAsyncArt
 from .api.ipcontrol import (
     COLOR_TONE_OPTIONS,
@@ -219,7 +220,7 @@ async def async_setup_entry(
         )
 
     # Use persisted flag if available, otherwise probe live
-    is_frame_tv_cached = entry.data.get(CONF_IS_FRAME_TV, False)
+    is_frame_tv_cached = FRAME_FEATURES_ENABLED and entry.data.get(CONF_IS_FRAME_TV, False)
     if is_frame_tv_cached:
         is_frame_supported = True
     else:

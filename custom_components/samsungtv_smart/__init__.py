@@ -48,6 +48,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.storage import STORAGE_DIR
 from homeassistant.helpers.typing import ConfigType
 
+from .fork_policy import FRAME_FEATURES_ENABLED
 from .api.art import SamsungTVAsyncArt
 from .api.samsungws import ConnectionFailure, Ping, SamsungTVWS
 from .api.smartthings import SmartThingsTV
@@ -1200,29 +1201,31 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     if local_logo_path := await _register_logo_paths(hass):
         hass.data.setdefault(DOMAIN, {})[LOCAL_LOGO_PATH] = local_logo_path
 
-    # Register folder-gallery-card as Lovelace resource
-    await _register_gallery_card(hass)
+    # This S90C build does not expose artwork endpoints or frontend resources.
+    if FRAME_FEATURES_ENABLED:
+        # Register folder-gallery-card as Lovelace resource
+        await _register_gallery_card(hass)
 
-    # On-demand resized-thumbnail endpoint used by the gallery card so big
-    # folders of full-size originals don't get downloaded at full resolution.
-    try:
-        from .http_thumbnail import SamsungTVThumbnailView
+        # On-demand resized-thumbnail endpoint used by the gallery card so big
+        # folders of full-size originals don't get downloaded at full resolution.
+        try:
+            from .http_thumbnail import SamsungTVThumbnailView
 
-        hass.http.register_view(SamsungTVThumbnailView(hass))
-    except Exception as exc:  # pylint: disable=broad-except
-        _LOGGER.warning("Could not register thumbnail view: %s", exc)
+            hass.http.register_view(SamsungTVThumbnailView(hass))
+        except Exception as exc:  # pylint: disable=broad-except
+            _LOGGER.warning("Could not register thumbnail view: %s", exc)
 
-    # One-click upload endpoint used by the art-upload card (pick a file on any
-    # device → straight to the Frame, no folder sensor needed).
-    try:
-        from .http_upload import SamsungArtUploadView
+        # One-click upload endpoint used by the art-upload card (pick a file on any
+        # device → straight to the Frame, no folder sensor needed).
+        try:
+            from .http_upload import SamsungArtUploadView
 
-        hass.http.register_view(SamsungArtUploadView(hass))
-    except Exception as exc:  # pylint: disable=broad-except
-        _LOGGER.warning("Could not register art upload view: %s", exc)
+            hass.http.register_view(SamsungArtUploadView(hass))
+        except Exception as exc:  # pylint: disable=broad-except
+            _LOGGER.warning("Could not register art upload view: %s", exc)
 
-    # Register the art-upload Lovelace card (served + auto-added as a resource).
-    await _register_bundled_card(hass, "samsung-art-upload-card.js")
+        # Register the art-upload Lovelace card (served + auto-added as a resource).
+        await _register_bundled_card(hass, "samsung-art-upload-card.js")
 
     return True
 
