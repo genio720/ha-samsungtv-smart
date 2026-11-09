@@ -463,6 +463,7 @@ class SamsungMobileBFF:
         self._background_tasks: set[asyncio.Task] = set()
         self._ws: aiohttp.ClientWebSocketResponse | None = None
         self._seq = 0
+        self._game_mode_lock = asyncio.Lock()
         self._pending: dict[str, asyncio.Future] = {}
         self.picture_modes: PictureModeLayer | None = None
         self.layers: dict[str, SettingLayer] = {}
@@ -765,6 +766,14 @@ class SamsungMobileBFF:
         layer = self.layers.get(layer_id)
         if layer is None or not 0 <= index < len(layer.elements):
             return False
+        if (
+            layer_id == "s/setting.layer.gamemode"
+            and len(layer.elements) > 1
+            and len({e.element_id for e in layer.elements}) == 1
+        ):
+            return await self._set_cycling_game_mode(
+                layer.elements[index].label, confirm_timeout
+            )
         if layer.current == index:
             return True
         answer = await self._request("set.settings.data", layer.elements[index].params)
@@ -784,6 +793,64 @@ class SamsungMobileBFF:
             index,
         )
         return False
+
+
+    async def _set_cycling_game_mode(
+        self, target_label: str, confirm_timeout: float
+    ) -> bool:
+        """Reach a labelled Game Mode via bounded, read-confirmed steps.
+
+        Some TVs give every Game Mode option the same ID and advance one
+        option per set, ignoring subTitle. Never send another step unless
+        a fresh read confirms that the previous step changed the state.
+        """
+        layer_id = "s/setting.layer.gamemode"
+        async with self._game_mode_lock:
+            answer = await self._request("get.settings.data")
+            if answer is None:
+                return False
+            layer = self.layers.get(layer_id)
+            if layer is None or layer.current_element is None:
+                return False
+            signature = tuple((e.element_id, e.label, e.dim) for e in layer.elements)
+            if len({e.element_id for e in layer.elements}) != 1:
+                return False
+            targets = [e for e in layer.elements if e.label == target_label]
+            if len(targets) != 1 or targets[0].dim:
+                return False
+            if layer.current_element.label == target_label:
+                return True
+
+            for _ in range(len(layer.elements) - 1):
+                previous = layer.current_element.label
+                answer = await self._request("set.settings.data", targets[0].params)
+                if not self._ok(answer):
+                    return False
+                loop = asyncio.get_running_loop()
+                deadline = loop.time() + confirm_timeout
+                changed = False
+                while loop.time() < deadline:
+                    await asyncio.sleep(0.25)
+                    answer = await self._request(
+                        "get.settings.data", timeout=max(0.1, deadline - loop.time())
+                    )
+                    if answer is None:
+                        return False
+                    layer = self.layers.get(layer_id)
+                    if (
+                        layer is None or layer.current_element is None
+                        or tuple((e.element_id, e.label, e.dim) for e in layer.elements)
+                        != signature
+                    ):
+                        return False
+                    if layer.current_element.label == target_label:
+                        return True
+                    if layer.current_element.label != previous:
+                        changed = True
+                        break
+                if not changed:
+                    return False
+            return False
 
     async def async_launch_source(self, source_id: str) -> bool:
         """Switch to an input; True when the TV accepted it."""
